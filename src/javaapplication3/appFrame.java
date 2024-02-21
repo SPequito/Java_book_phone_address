@@ -3,8 +3,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package javaapplication3;
+import javax.swing.*;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -13,11 +18,19 @@ import javax.swing.JTable;
 public class appFrame extends javax.swing.JFrame {
 
     SQliteDatabase base = new SQliteDatabase();
+    JTable table;
+    
     /**
      * Creates new form appFrame
+     * @param data
+     * @throws java.sql.SQLException
+     * @throws java.lang.ClassNotFoundException
      */
-    public appFrame() {
+    public appFrame() throws SQLException, ClassNotFoundException {
+   
         initComponents();
+     
+     
     }
 
     /**
@@ -34,6 +47,7 @@ public class appFrame extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jTextField4 = new javax.swing.JTextField();
         jTextField5 = new javax.swing.JTextField();
@@ -74,13 +88,29 @@ public class appFrame extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
         jPanel1.add(jTextField3, gridBagConstraints);
 
-        jButton1.setText("Add");
-        jButton1.setPreferredSize(new java.awt.Dimension(29, 16));
-        jButton1.setRequestFocusEnabled(false);
+        jButton2.setText("Delete");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 7;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        jPanel1.add(jButton2, gridBagConstraints);
+
+        jButton1.setText("Add");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 7;
         gridBagConstraints.gridy = 5;
-        gridBagConstraints.gridwidth = 7;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
         gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
@@ -149,9 +179,10 @@ public class appFrame extends javax.swing.JFrame {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.gridwidth = 7;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.gridheight = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 16;
         gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
         jPanel1.add(jScrollPane2, gridBagConstraints);
@@ -167,6 +198,43 @@ public class appFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try {
+            base.add(jTextField1.getText(), jTextField2.getText(),jTextField3.getText(),jTextField4.getText(),jTextField5.getText());     
+        } catch (ClassNotFoundException ex) {
+            System.out.println("Ja foste");
+        } catch (SQLException ex) {
+            System.out.println("Ja foste");
+        }
+       DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+       model.setRowCount(0);
+        try {
+            base.populateTable(jTable2);
+        } catch (ClassNotFoundException ex) {
+              System.out.println("Ja foste 2");
+        } catch (SQLException ex) {
+             System.out.println("Ja foste 2");
+        }
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+      if(jTable2.getSelectedRow() > -1){
+      try{
+      base.delete(String.valueOf(jTable2.getSelectedColumns()));
+      } catch (SQLException ex) {
+               System.out.println("Ja foste");
+          } catch (ClassNotFoundException ex) {
+              Logger.getLogger(appFrame.class.getName()).log(Level.SEVERE, null, ex);
+          }
+      
+      }
+        
+        
+        
+        
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -174,6 +242,7 @@ public class appFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

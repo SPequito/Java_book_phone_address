@@ -11,26 +11,27 @@ import javax.swing.JTable;
  *
  * @author stefa
  */
-public class JavaApplication3 {
+public class Main {
         
     /**
      * @param args the command line arguments
+     * @throws java.sql.SQLException
+     * @throws java.lang.ClassNotFoundException
 
      */
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         
         
         SQliteDatabase databaseSqlite = new SQliteDatabase();
-        String dataBase = "jdbc:sqlite:C:\\sqlite\\db\\book.db";
-       
-               
-        appFrame appFrame1 = new appFrame();
-            JTable table = appFrame1.getTable();
-          
-            
-        databaseSqlite.SqliteInit(dataBase,table);
 
-        appFrame1.setVisible(true);
+            
+            appFrame appFrame1 = new appFrame();
+            JTable table = appFrame1.getTable();
+            appFrame1.setVisible(true);
+            
+            
+            databaseSqlite.SqliteInit(table);
+                
    
     }
     

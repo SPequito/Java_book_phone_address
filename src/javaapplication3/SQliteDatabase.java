@@ -15,59 +15,75 @@ import javax.swing.table.DefaultTableModel;
 public final class SQliteDatabase {
 
    
-    private String data;
-    private JTable table;
-    private String[] columns = {"id","First Name","Last Name", "Phone", "Address", "Email"};
+    private String data = null;
+    private static JTable table;
+    Connection connection;
+    String dataBase = "jdbc:sqlite:C:\\sqlite\\db\\book.db";
     
     
     
-    public void SqliteInit(String data, JTable table) throws SQLException, ClassNotFoundException{
-       this.data = data;
-       this.table = table;
-       SQliteDatabase(data);
+    public void SqliteInit( JTable table) throws SQLException, ClassNotFoundException{
+
+       SQliteDatabase.table = table;
        populateTable(table);
 
     }
 
-    public void SQliteDatabase(String data) throws SQLException, ClassNotFoundException  {   
-      Connection connection ;
-      Statement stat;
-      String insertQuery = "INSERT INTO booking(first_name, last_name, phone, adress, email) VALUES (?, ?, ?, ?, ?)";
-      PreparedStatement preStat;      
-      Class.forName("org.sqlite.JDBC");
-      connection = DriverManager.getConnection(data);
-      if ( connection!= null)
-         System.out.println("Connection to SQLite has been established.");
-        /*   preStat = connection.prepareStatement(insertQuery);
-      preStat.setString(1,"Stefan");   
-      preStat.setInt(3,1234567);
-      preStat.setString(4,"Sail fish 2323");
-      preStat.setString(5,"Stefan.Almeida@gmail.com");
-      preStat.executeUpdate();
-
-      preStat.close();*/
-        connection.close();
-    }
-
     public void populateTable(JTable table) throws ClassNotFoundException, SQLException {
-       
-  
-        Class.forName("org.sqlite.JDBC");
-        Connection connection = DriverManager.getConnection(data);
+
+        connect();
         Statement stat = connection.createStatement();
-        ResultSet rs = stat.executeQuery("SELECT id,* FROM booking");
+        ResultSet rs = stat.executeQuery("SELECT *,* FROM booking");
         
         while(rs.next()){
-            Object[] row = new Object[columns.length];
-            for(int i = 1; i < columns.length; i++){
+            Object[] row = new Object[table.getColumnCount() + 1];
+            for(int i = 1; i < table.getColumnCount() + 1; i++){
                 row[i-1] = rs.getObject(i);        
             }
         ((DefaultTableModel) table.getModel()).insertRow(rs.getRow()-1, row);
+        
 
         }
 
         rs.close();
         connection.close();
 
+    }
+    
+    public void add(Object first_name,Object last_name,Object phone,Object adress,Object email) throws ClassNotFoundException, SQLException{
+        
+        int lastRowIndex = table.getRowCount() - 1;
+        
+        connect();
+        PreparedStatement preStat;  
+        String insertQuery = "INSERT INTO booking(first_name, last_name, phone, adress, email) VALUES (?, ?, ?, ?, ?)";
+        preStat = connection.prepareStatement(insertQuery);
+        preStat.setString(1, first_name.toString());
+        preStat.setString(2, last_name.toString());
+        preStat.setString(3, phone.toString());
+        preStat.setString(4, adress.toString());
+        preStat.setString(5, email.toString());
+        preStat.executeUpdate();
+        ((DefaultTableModel) table.getModel()).fireTableRowsInserted(lastRowIndex, lastRowIndex);
+        ((DefaultTableModel) table.getModel()).fireTableDataChanged();
+
+
+    }
+
+    public void delete(String row) throws ClassNotFoundException, SQLException {
+        connect();
+        Statement stat = connection.createStatement();
+        stat.executeUpdate("DELETE FROM booking WHERE id =" + row + ";");
+        System.out.println(row);
+        ((DefaultTableModel) table.getModel()).removeRow(Integer.parseInt(row) - 1);
+        
+        connection.close();
+
+    }
+    
+    private void connect() throws ClassNotFoundException, SQLException{  
+        Class.forName("org.sqlite.JDBC");
+        connection = DriverManager.getConnection(dataBase);
+    
     }
 }
