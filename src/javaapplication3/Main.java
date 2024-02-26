@@ -27,9 +27,9 @@ public class Main {
             
             appFrame appFrame1 = new appFrame();
             JTable table = appFrame1.getTable();
+            
+            
             appFrame1.setVisible(true);
-            
-            
             databaseSqlite.SqliteInit(table);
                 
    

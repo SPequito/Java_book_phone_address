@@ -70,15 +70,39 @@ public final class SQliteDatabase {
 
     }
 
-    public void delete(String row) throws ClassNotFoundException, SQLException {
+    public void delete(String id, String row) throws ClassNotFoundException, SQLException {
         connect();
         Statement stat = connection.createStatement();
-        stat.executeUpdate("DELETE FROM booking WHERE id =" + row + ";");
-        System.out.println(row);
-        ((DefaultTableModel) table.getModel()).removeRow(Integer.parseInt(row) - 1);
+        stat.executeUpdate("DELETE FROM booking WHERE id =" + id + ";");
+        ((DefaultTableModel) table.getModel()).removeRow(Integer.parseInt(row));
         
         connection.close();
 
+    }
+    
+    public void update(String id, int row, Object first_name,Object last_name,Object phone,Object adress,Object email) throws ClassNotFoundException, SQLException{
+        String insertQuery = "UPDATE booking SET first_name = ? , "+ "WHERE id = "+id+"";
+        connect();
+        PreparedStatement preStat ;
+        preStat = connection.prepareStatement(insertQuery);
+
+        
+        preStat.setString(1, first_name.toString());
+        preStat.setString(2, last_name.toString());
+        preStat.setString(3, phone.toString());
+        preStat.setString(4, adress.toString());
+        preStat.setString(5, email.toString());
+        preStat.executeUpdate();
+        
+        
+        
+        
+        ((DefaultTableModel) table.getModel()).fireTableCellUpdated(row, row);
+        
+        connection.close();
+
+    
+    
     }
     
     private void connect() throws ClassNotFoundException, SQLException{  
