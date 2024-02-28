@@ -190,7 +190,15 @@ public class appFrame extends javax.swing.JFrame {
             new String [] {
                 "id", "First Name", "Last Name", "Phone", "Address", "Email"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jTableSqlite.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTableSqliteMouseClicked(evt);
@@ -316,13 +324,30 @@ public class appFrame extends javax.swing.JFrame {
     private void jButtonUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateActionPerformed
     if(jTableSqlite.getSelectedRow() > -1){
       try{
-      base.update(String.valueOf(jTableSqlite.getValueAt(jTableSqlite.getSelectedRow(), 0)),jTableSqlite.getSelectedRow(),jTextFieldFirstName.getText(), jTextFieldLastName.getText(), jTextFieldPhone.getText(), jTextFieldAddress.getText(), jTextFieldEmail.getText());
+          if (!jTextFieldEmail.getText().contains("@") && jTextFieldEmail.getText().isBlank() == false) {
+                JOptionPane.showMessageDialog(null, "Please the email need to contaneed @");
+            }
+            else if  (jTextFieldAddress.getText().isBlank() && jTextFieldFirstName.getText().isBlank()&& jTextFieldEmail.getText().isBlank() && jTextFieldLastName.getText().isBlank() && jTextFieldPhone.getText().isBlank()) {
+                JOptionPane.showMessageDialog(null, "Please write something");
+            } else {
+                base.update(String.valueOf(jTableSqlite.getValueAt(jTableSqlite.getSelectedRow(), 0)),jTableSqlite.getSelectedRow(),jTextFieldFirstName.getText(), jTextFieldLastName.getText(), jTextFieldPhone.getText(), jTextFieldAddress.getText(), jTextFieldEmail.getText());
+            }
+
       } catch (SQLException ex) {
                System.out.println("Ja foste");
           } catch (ClassNotFoundException ex) {
               Logger.getLogger(appFrame.class.getName()).log(Level.SEVERE, null, ex);
           }     
-      }  
+      }
+       DefaultTableModel model = (DefaultTableModel) jTableSqlite.getModel();
+       model.setRowCount(0);
+            try {
+            base.populateTable(jTableSqlite);
+        } catch (ClassNotFoundException ex) {
+              System.out.println("Ja foste 2");
+        } catch (SQLException ex) {
+             System.out.println("Ja foste 2");
+        }
     }//GEN-LAST:event_jButtonUpdateActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

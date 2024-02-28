@@ -81,7 +81,7 @@ public final class SQliteDatabase {
     }
     
     public void update(String id, int row, Object first_name,Object last_name,Object phone,Object adress,Object email) throws ClassNotFoundException, SQLException{
-        String insertQuery = "UPDATE booking SET first_name = ? , "+ "WHERE id = "+id+"";
+        String insertQuery = "UPDATE booking SET first_name = ? ,last_name = ?, phone = ? , adress = ?, email = ? WHERE id = "+id+"";
         connect();
         PreparedStatement preStat ;
         preStat = connection.prepareStatement(insertQuery);
@@ -93,16 +93,10 @@ public final class SQliteDatabase {
         preStat.setString(4, adress.toString());
         preStat.setString(5, email.toString());
         preStat.executeUpdate();
-        
-        
-        
-        
-        ((DefaultTableModel) table.getModel()).fireTableCellUpdated(row, row);
-        
-        connection.close();
 
-    
-    
+        ((DefaultTableModel) table.getModel()).fireTableRowsUpdated(row, row);
+        ((DefaultTableModel) table.getModel()).fireTableDataChanged();
+
     }
     
     private void connect() throws ClassNotFoundException, SQLException{  
